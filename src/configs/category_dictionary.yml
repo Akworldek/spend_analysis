@@ -1,0 +1,47 @@
+categories:
+    food:
+        - zomato
+        - hotel
+        - cafe
+        - restaurant
+        - snacks
+        - foods
+    
+    shopping:
+        - amazon
+        - cart
+        - market
+        - supermarket
+        - enterprises
+        - market
+    
+    drinks:
+        - wine
+        - liqour
+        - lounge
+        - liquor
+        
+    groceries:
+        - atm
+    
+    necessary:
+        - credit
+        - loan
+        - bankofbaroda
+        
+    medical:
+        - practo
+        - medical
+        
+    charity:
+        - unicef
+
+    investment:
+        - zerodha
+        - wintwealth
+        - mutualfund
+    
+    subscription:
+        - spotify
+        - adobe
+        - netflix

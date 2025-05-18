@@ -8,7 +8,7 @@ from django.core.management import execute_from_command_line
 def setup_django_environment():
     """Set up Django environment"""
     print(sys.path)
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'src.configs.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'src.backend.spend_analysis.settings')
     django.setup()
 
 

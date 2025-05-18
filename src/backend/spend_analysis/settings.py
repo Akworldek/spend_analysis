@@ -3,6 +3,8 @@ Django settings for spend_analysis project.
 """
 import os
 from pathlib import Path
+import env_settings
+from env_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +16,12 @@ SECRET_KEY = 'django-insecure-your-secret-key-here'  # Replace with a proper sec
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# CORS configuration
+CORS_ALLOW_ALL_ORIGINS = CORS_ALLOW_ALL_ORIGINS
+if not CORS_ALLOW_ALL_ORIGINS and CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -59,11 +67,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'spend_analysis.wsgi.application'
 
-# Database
+# Then replace your DATABASES configuration with this
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': DB_ENGINE,
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 

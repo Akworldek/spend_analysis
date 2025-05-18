@@ -1,135 +1,116 @@
-Spend Analysis Application
-A full-stack web application for tracking and analyzing personal spending.
-Features
+# Spend Analysis Application
 
-Track transactions with categories
-Upload CSV files of transactions
-Visualize spending patterns
-User authentication and profiles
-Responsive design for mobile and desktop
+A full-stack application for analyzing spending patterns using Django REST Framework backend and React frontend.
 
-Technology Stack
+## Project Structure
 
-Backend: Django, Django REST Framework
-Frontend: React, Bootstrap
-Database: SQLite (default), can be configured for PostgreSQL or MySQL
-Visualization: Chart.js
+```
+spend_analysis/
+├── backend/             # Django backend
+│   ├── spend_analysis/  # Django project settings
+│   ├── api/             # Django app for REST API
+│   └── ...
+├── frontend/            # React frontend
+│   ├── src/
+│   ├── public/
+│   └── ...
+├── .env                 # Environment variables (not tracked in git)
+└── README.md            # This file
+```
 
-Getting Started
-Prerequisites
+## Prerequisites
 
-Python 3.8+
-Node.js 14+
-pip (Python package manager)
-npm (Node.js package manager)
+- Python 3.8+
+- Node.js 14+ and npm
+- PostgreSQL (optional, can use SQLite for development)
 
-Installation
+## Local Development Setup
 
-Clone the repository
+### 1. Clone the Repository
 
-bashgit clone https://github.com/Akworldek/spend_analysis.git
+```bash
+git clone https://github.com/Akworldek/spend_analysis.git
 cd spend_analysis
+```
 
-Create and activate a virtual environment
+### 2. Backend Setup
 
-bashpython -m venv venv
+```bash
+# Create a virtual environment
+python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-Install Python dependencies
+# Install dependencies
+pip install -r requirements.txt
 
-bashpip install -r requirements.txt
+# Create .env file
+cp .env.example .env
+# Edit .env with your settings
 
-Install Node.js dependencies
+# Run migrations
+cd backend
+python manage.py migrate
 
-bashnpm install
+# Create superuser (optional)
+python manage.py createsuperuser
 
-Initialize the database
+# Run development server
+python manage.py runserver
+```
 
-bashpython spend_analysis_main.py --init
+### 3. Frontend Setup
 
-Create a superuser
+```bash
+# Navigate to frontend directory
+cd frontend
 
-bashpython spend_analysis_main.py --superuser
+# Install dependencies
+npm install
 
-Set up initial data
+# Run development server
+npm start
+```
 
-bashpython spend_analysis_main.py --setup-data
-Running the Application
-Run the server:
-bashpython spend_analysis_main.py --run
-The application will be available at http://127.0.0.1:8000/
-Development
-For frontend development:
-bashnpm run dev
-Project Structure
+### 4. Access the Application
 
-spend_analysis/ - Django project settings
-src/ - Main application code
+- Backend: http://localhost:8000/
+- Admin interface: http://localhost:8000/admin/
+- API: http://localhost:8000/api/
+- Frontend: http://localhost:3000/
 
-backend/ - Django backend
+## API Documentation
 
-models.py - Database models
-views.py - API views
-serializers.py - REST API serializers
-urls.py - API URL routing
-auth_urls.py - Authentication URL routing
+The backend provides RESTful API endpoints for spending data:
 
+- `GET /api/transactions/` - List all transactions
+- `POST /api/transactions/` - Create a new transaction
+- `GET /api/transactions/{id}/` - Retrieve a specific transaction
+- `PUT /api/transactions/{id}/` - Update a transaction
+- `DELETE /api/transactions/{id}/` - Delete a transaction
+- `GET /api/categories/` - List all categories
 
-views/ - React frontend components
+## Environment Variables
 
-api.js - API client
-landing_page.py - Landing page component
+The application uses the following environment variables:
 
+- `DEBUG` - Enable/disable Django debug mode
+- `SECRET_KEY` - Django secret key
+- `DB_ENGINE` - Database engine
+- `DB_NAME` - Database name
+- `DB_USER` - Database user
+- `DB_PASSWORD` - Database password
+- `DB_HOST` - Database host
+- `DB_PORT` - Database port
+- `CORS_ALLOW_ALL_ORIGINS` - Allow all origins for CORS
+- `CORS_ALLOWED_ORIGINS` - Comma-separated list of allowed origins
 
-configs/ - Configuration files
-utils/ - Utility functions
+## Deployment
 
+For production deployment, make sure to:
 
-templates/ - Django HTML templates
-static/ - Static files (CSS, JS, images)
-media/ - User-uploaded files
-spend_analysis_main.py - Main entry point
-
-Deploying to Production
-Option 1: Heroku
-
-Create a Heroku account and install the Heroku CLI
-Login to Heroku CLI
-
-bashheroku login
-
-Create a new Heroku app
-
-bashheroku create your-app-name
-
-Add PostgreSQL add-on
-
-bashheroku addons:create heroku-postgresql:hobby-dev
-
-Set up environment variables
-
-bashheroku config:set DJANGO_SECRET_KEY=your-secret-key
-heroku config:set DJANGO_DEBUG=False
-
-Deploy to Heroku
-
-bashgit push heroku main
-Option 2: DigitalOcean
-
-Create a DigitalOcean account
-Create a new Droplet with Ubuntu
-SSH into your Droplet
-Clone the repository
-Set up environment variables
-Install dependencies
-Set up Nginx and Gunicorn
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-Contributing
-
-Fork the repository
-Create a feature branch
-Commit your changes
-Push to the branch
-Create a new Pull Request
+1. Set `DEBUG=False` in .env
+2. Set a strong `SECRET_KEY` in .env
+3. Configure proper `ALLOWED_HOSTS` and `CORS_ALLOWED_ORIGINS`
+4. Use a production-ready database
+5. Set up a proper web server (like Nginx)
+6. Build the React frontend with `npm run build`

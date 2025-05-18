@@ -164,8 +164,177 @@ export const expenseService = {
   }
 };
 
+const API_URL = process.env.REACT_APP_API_URL || '';
+
+// Helper function for making authenticated API requests
+const fetchWithAuth = async (url, options = {}) => {
+  // Set default headers
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Include credentials for session-based authentication
+  const config = {
+    ...options,
+    headers,
+    credentials: 'include',
+  };
+
+  const response = await fetch(`${API_URL}${url}`, config);
+
+  // Handle 401 Unauthorized - redirect to login
+  if (response.status === 401) {
+    window.location.href = '/auth/login/';
+    return null;
+  }
+
+  // For non-204 (No Content) responses, parse JSON
+  if (response.status !== 204) {
+    return await response.json();
+  }
+
+  return null;
+};
+
+// Authentication API
+export const authAPI = {
+  login: async (username, password) => {
+    const response = await fetch(`${API_URL}/auth/login/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+      credentials: 'include',
+    });
+    return response.ok;
+  },
+
+  register: async (username, password1, password2) => {
+    const response = await fetch(`${API_URL}/auth/register/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password1, password2 }),
+    });
+    return response.ok;
+  },
+
+  logout: async () => {
+    await fetch(`${API_URL}/auth/logout/`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    window.location.href = '/';
+  },
+
+  getProfile: async () => {
+    return await fetchWithAuth('/api/profile/');
+  },
+
+  updateProfile: async (userData) => {
+    return await fetchWithAuth('/api/profile/update/', {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  },
+};
+
+// Transactions API
+export const transactionsAPI = {
+  getAll: async () => {
+    return await fetchWithAuth('/api/transactions/');
+  },
+
+  getById: async (id) => {
+    return await fetchWithAuth(`/api/transactions/${id}/`);
+  },
+
+  create: async (transaction) => {
+    return await fetchWithAuth('/api/transactions/', {
+      method: 'POST',
+      body: JSON.stringify(transaction),
+    });
+  },
+
+  update: async (id, transaction) => {
+    return await fetchWithAuth(`/api/transactions/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(transaction),
+    });
+  },
+
+  delete: async (id) => {
+    return await fetchWithAuth(`/api/transactions/${id}/`, {
+      method: 'DELETE',
+    });
+  },
+
+  uploadCSV: async (formData) => {
+    return await fetch(`${API_URL}/api/upload-csv/`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    }).then(response => response.json());
+  },
+};
+
+// Categories API
+export const categoriesAPI = {
+  getAll: async () => {
+    return await fetchWithAuth('/api/categories/');
+  },
+
+  getById: async (id) => {
+    return await fetchWithAuth(`/api/categories/${id}/`);
+  },
+
+  create: async (category) => {
+    return await fetchWithAuth('/api/categories/', {
+      method: 'POST',
+      body: JSON.stringify(category),
+    });
+  },
+
+  update: async (id, category) => {
+    return await fetchWithAuth(`/api/categories/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(category),
+    });
+  },
+
+  delete: async (id) => {
+    return await fetchWithAuth(`/api/categories/${id}/`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Analysis API
+export const analysisAPI = {
+  getSummary: async (startDate, endDate) => {
+    let url = '/api/summary/';
+    if (startDate || endDate) {
+      url += '?';
+      if (startDate) url += `start_date=${startDate}&`;
+      if (endDate) url += `end_date=${endDate}`;
+    }
+    return await fetchWithAuth(url);
+  },
+
+  getMonthlySpending: async (year) => {
+    const url = year ? `/api/monthly/?year=${year}` : '/api/monthly/';
+    return await fetchWithAuth(url);
+  },
+};
+
 export default {
-  auth: authService,
+  auth: authAPI,
   categories: categoryService,
-  expenses: expenseService
+  expenses: expenseService,
+  transactions: transactionsAPI,
+  categories: categoriesAPI,
+  analysis: analysisAPI,
 };

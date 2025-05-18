@@ -1,0 +1,1 @@
+web: gunicorn spend_analysis.wsgi --log-file -

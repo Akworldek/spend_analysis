@@ -1,13 +1,30 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView
+
 from . import views
 
 router = DefaultRouter()
 router.register(r'categories', views.CategoryViewSet, basename='category')
 router.register(r'expenses', views.ExpenseViewSet, basename='expense')
+router.register(r'transactions', views.TransactionViewSet, basename='transaction')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('admin/', admin.site.urls),
+    path('api/', include('src.backend.urls')),
+    path('auth/', include('src.backend.auth_urls')),
+    path('', TemplateView.as_view(template_name='index.html')),
+    path('', include(router.urls)),
+    path('summary/', views.spending_summary, name='spending_summary'),
+    path('monthly/', views.monthly_spending, name='monthly_spending'),
+    path('upload-csv/', views.upload_csv, name='upload_csv'),
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/update/', views.update_profile, name='update_profile')
 ]
 
 # settings.py additions
@@ -46,3 +63,8 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
+
+# Serve static and media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
